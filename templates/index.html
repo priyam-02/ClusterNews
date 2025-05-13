@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🧠 Global News Topic Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .fade-in {
+        animation: fadeIn 1s ease-in forwards;
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-gray-100 font-sans"
+  >
+    <div class="min-h-screen px-6 py-8">
+      <header class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold text-indigo-300 tracking-tight">
+          📰 Global News Topic Tracker
+        </h1>
+        <p class="text-gray-400 mt-3 text-lg">
+          Discover AI-curated summaries of the world's most talked-about
+          headlines
+        </p>
+      </header>
+
+      <!-- 🚀 Landing Section -->
+      <section id="landing" class="text-center fade-in">
+        <div class="flex justify-center mb-6">
+          <div
+            class="bg-indigo-600/10 px-4 py-1 text-indigo-300 text-sm font-semibold rounded-full animate-pulse"
+          >
+            🔍 LLM-enhanced real-time clustering
+          </div>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-indigo-200 mb-4">
+          Your AI-Powered Front Page
+        </h2>
+
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
+          We crawl Google News, extract headlines, cluster related topics using
+          dense vector embeddings, and summarize them using a local LLaMA 3.1
+          model — all within seconds. Stay ahead with concise, accurate news
+          insights.
+        </p>
+
+        <div class="relative inline-block">
+          <button
+            onclick="startLoading()"
+            class="px-8 py-3 bg-gradient-to-br from-violet-600 to-indigo-700 hover:from-violet-700 hover:to-indigo-800 text-white rounded-full text-lg font-semibold transition duration-300 shadow-lg"
+          >
+            🔁 Fetch Latest News
+          </button>
+
+          <img
+            src="https://img.icons8.com/ios-filled/50/ffffff/news.png"
+            alt="News"
+            class="absolute -top-10 right-[-60px] w-10 opacity-40 animate-bounce"
+          />
+        </div>
+
+        <div class="mt-10 text-gray-400 text-sm italic">
+          <marquee behavior="scroll" direction="left" scrollamount="4">
+            🗞️ Clustering headlines from 50+ global sources · 🤖 Powered by
+            local LLaMA summaries · 🔒 All processing done on your machine.
+          </marquee>
+        </div>
+      </section>
+
+      <!-- 🌀 Loading Indicator -->
+      <div
+        id="loading"
+        class="hidden items-center justify-center mt-12 fade-in"
+      >
+        <div class="text-center max-w-xl mx-auto">
+          <svg
+            class="animate-spin h-12 w-12 mx-auto text-violet-400 mb-6"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"
+            />
+          </svg>
+          <h2 class="text-xl font-semibold text-indigo-300 mb-2">
+            Generating Topic Clusters from Global Headlines...
+          </h2>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            We're scraping news articles, clustering similar topics using vector
+            embeddings, and generating summaries with a local LLaMA model. This
+            may take a few moments. Grab a coffee ☕
+          </p>
+        </div>
+      </div>
+
+      <!-- 🔄 Refresh Button -->
+      <div class="text-center mt-10 hidden" id="refresh-container">
+        <button
+          id="refresh-btn"
+          onclick="refreshClusters()"
+          class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full text-sm font-medium transition shadow inline-flex items-center gap-2"
+        >
+          <span id="refresh-text">🔄 Refresh News</span>
+          <svg
+            id="refresh-spinner"
+            class="hidden animate-spin h-4 w-4 text-white"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 🧠 Cluster Output -->
+      <div
+        id="cluster-container"
+        class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 hidden fade-in"
+      ></div>
+    </div>
+
+    <script>
+      function startLoading() {
+        document.getElementById("landing").style.display = "none";
+        document.getElementById("loading").style.display = "flex";
+        loadClusters();
+      }
+
+      function refreshClusters() {
+        const refreshBtn = document.getElementById("refresh-btn");
+        const refreshText = document.getElementById("refresh-text");
+        const refreshSpinner = document.getElementById("refresh-spinner");
+        const container = document.getElementById("cluster-container");
+
+        refreshBtn.disabled = true;
+        refreshSpinner.classList.remove("hidden");
+        refreshText.innerText = "Refreshing...";
+
+        container.innerHTML = "";
+        document.getElementById("loading").style.display = "flex";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        loadClusters().then(() => {
+          refreshBtn.disabled = false;
+          refreshSpinner.classList.add("hidden");
+          refreshText.innerText = "🔄 Refresh News";
+        });
+      }
+
+      async function loadClusters() {
+        try {
+          const response = await fetch("/data");
+          const clusters = await response.json();
+
+          document.getElementById("loading").style.display = "none";
+          document
+            .getElementById("refresh-container")
+            .classList.remove("hidden");
+
+          const container = document.getElementById("cluster-container");
+          container.classList.remove("hidden");
+          container.innerHTML = "";
+
+          clusters.forEach((cluster) => {
+            const box = document.createElement("div");
+            box.className =
+              "bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 hover:shadow-indigo-500/20";
+
+            const title = document.createElement("h2");
+            title.className = "text-xl font-bold text-indigo-300 mb-3";
+            title.innerText = "📝 " + cluster.summary;
+            box.appendChild(title);
+
+            const ul = document.createElement("ul");
+            ul.className = "list-disc list-inside space-y-1 text-violet-200";
+            cluster.headlines.forEach((hl) => {
+              const li = document.createElement("li");
+              li.innerHTML = `<a href="${hl.url}" target="_blank" class="hover:text-violet-300 text-violet-200 underline underline-offset-2">${hl.text}</a>`;
+              ul.appendChild(li);
+            });
+
+            box.appendChild(ul);
+            container.appendChild(box);
+          });
+        } catch (error) {
+          document.getElementById("loading").innerHTML =
+            "<p class='text-red-400 font-semibold'>❌ Failed to fetch news. Please try again later.</p>";
+        }
+      }
+    </script>
+  </body>
+</html>

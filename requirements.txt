@@ -1,0 +1,8 @@
+Flask
+sentence-transformers
+transformers
+scikit-learn
+selenium 
+webdriver-manager
+hdbscan
+openai

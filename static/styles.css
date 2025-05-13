@@ -1,0 +1,56 @@
+body {
+    background-color: #0d1117;
+    color: #e6edf3;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 2rem;
+}
+
+h1 {
+    color: #ffffff;
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.cluster-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.cluster-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.cluster-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.cluster-icon {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.cluster-topic {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #58a6ff;
+}
+
+.headline-list {
+    list-style-type: none;
+    padding-left: 1rem;
+}
+
+.headline-item {
+    margin: 0.25rem 0;
+    line-height: 1.6;
+    color: #c9d1d9;
+}
