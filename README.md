@@ -56,7 +56,7 @@ pip install -r requirements.txt
 Install and run Ollama locally: [https://ollama.com](https://ollama.com)
 
 ```bash
-ollama run llama3
+ollama run llama3.1
 ```
 
 > ✅ Make sure Ollama is running on `http://localhost:11434` before starting the app.
@@ -64,7 +64,7 @@ ollama run llama3
 ### 4. Run the Flask app
 
 ```bash
-python app.py
+python3 app.py
 ```
 
 Navigate to `http://localhost:5000` in your browser.
